@@ -6,13 +6,16 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1)
 	@Column(name = "id")
 	private Long id;
 
@@ -25,13 +28,14 @@ public class User implements Serializable {
 	@Column(name="status")
 	private boolean status;
 
-	@ManyToMany
+	@JsonIgnore
+	@ManyToMany(fetch=FetchType.EAGER, cascade= CascadeType.ALL)
 	@JoinTable(name = "follow", joinColumns = 
 			@JoinColumn(name = "user_followed", referencedColumnName = "id", nullable = false) , inverseJoinColumns = 
 					@JoinColumn(name = "follower", referencedColumnName = "id", nullable = false) )
 	private Collection<User> follows;
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade =CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, cascade =CascadeType.ALL)
 	@JoinColumn(name="userid")
 	public List<Tweet> Tweet;
 

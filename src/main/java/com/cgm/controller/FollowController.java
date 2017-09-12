@@ -1,16 +1,14 @@
-/*package com.cgm.controller;
+package com.cgm.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cgm.db.repo.DBUserDAO;
-import com.cgm.db.repository.contract.UserDataStore;
-import com.cgm.domain.UserLogin;
-import com.cgm.domain.UserStatus;
+import com.cgm.repository.UserDAO;
 
 import java.util.List;
 
@@ -18,9 +16,11 @@ import java.util.List;
 public class FollowController {
 
 	@Autowired
-    private DBUserDAO userDAO;//JPA
+    private UserDAO userDAO;//JPA
 	
-	@SuppressWarnings("unused")
+	
+}
+	/*@SuppressWarnings("unused")
 	@Autowired
 	private UserDataStore userDataStore; // JDBC
 

@@ -4,13 +4,12 @@
 <html>
 <head>
 <title>Twitter :: New Tweet</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
     function functionTweet(){
     	var content = document.getElementById("tweet").value;
     	var user = "<%=session.getAttribute("username")%>";
 		var Data = {
-			"id" : 1,
 			"tweet" : content,
 			"user_username" : user
 		};
@@ -33,6 +32,29 @@
 			}
 		});
 	};
+</script>
+
+<script>
+	$(document).ready(
+			function() {
+				$.ajax({
+					type : "GET",
+					url : 'http://localhost:8080/twitter/tweet/users',
+					dataType : "json"
+				}).then(
+						function(data) {
+							if (data != null) {
+								$("#messages").text("");
+								for (var i = 0; i < data.length; i++) {
+									$("#messages").append(
+											"<p>" + data[i].username + ":"
+													+ data[i].tweet + "</p>");
+								}
+							} else {
+								$('#messages').text("You need to login !");
+							}
+						});
+			})
 </script>
 
 </head>
@@ -71,5 +93,6 @@
 	</div>
 
 	<div id="newMessage"></div>
+	<div id="messages"></div>
 </body>
 </html>

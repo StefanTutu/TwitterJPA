@@ -8,23 +8,46 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 
 <script type="text/javascript">
-					function functionSearch() {
-						var username = $('#username').val();
-						var search = $('#search').val();
-						
-						console.log(username);
+	function functionSearch() {
+		var username = $('#username').val();
+		var search = $('#search').val();
 
-						if (username == "") {
-							window.location = 'http://localhost:8080/twitter/tweets/formatted?search='
-									+ search;
-						} else {
-							window.location = 'http://localhost:8080/twitter/tweets/'
-									+ username + "/formatted?search=" + search;
-						}
-						
-						var newMessage = document.getElementById('NewMessage');
-						newMessage.style.display = 'none';
-					};
+		console.log(username);
+
+		if (username == "") {
+			window.location = 'http://localhost:8080/twitter/tweets/formatted?search='
+					+ search;
+		} else {
+			window.location = 'http://localhost:8080/twitter/tweets/'
+					+ username + "/formatted?search=" + search;
+		}
+
+		var newMessage = document.getElementById('NewMessage');
+		newMessage.style.display = 'none';
+	};
+</script>
+
+<script>
+	$(document).ready(
+			function() {
+				$.ajax({
+					type : "GET",
+					url : 'http://localhost:8080/twitter/tweet/users',
+					dataType : "json"
+				}).then(
+						function(data) {
+							if (data != null) {
+								$("#messages").text("");
+								for (var i = 0; i < data.length; i++) {
+									$("#messages").append(
+											"<p>" + data[i].username + ":"
+													+ data[i].tweet + "</p>");
+								}
+							} else {
+								$('#messages').text("You need to login !");
+							}
+						});
+			})
 </script>
 </head>
 <body style="margin: 0px;">
@@ -34,7 +57,7 @@
 
 		<c:choose>
 			<c:when test="${not empty username}">
-				<h1 style="color: grey;">${username} Tweets</h1>
+				<h1 style="color: grey;">${username}Tweets</h1>
 			</c:when>
 
 			<c:otherwise>
@@ -44,13 +67,14 @@
 
 		<h3>Search tweets by user and keyword:</h3>
 
-		
-			<b>User:</b> <input type="text" id="username" value="${username}"
-				placeholder="Insert username" /> <b style="margin-left: 25px;">Keyword:</b>
-			<input type="text" id="search" value="${search}"
-				placeholder="Insert keyword" /> <input type="button" value="Search" id="searchButton" onClick="functionSearch()"
-				style="margin-left: 25px;" />
-		
+
+		<b>User:</b> <input type="text" id="username" value="${username}"
+			placeholder="Insert username" /> <b style="margin-left: 25px;">Keyword:</b>
+		<input type="text" id="search" value="${search}"
+			placeholder="Insert keyword" /> <input type="button" value="Search"
+			id="searchButton" onClick="functionSearch()"
+			style="margin-left: 25px;" />
+
 
 
 		<c:forEach var="tweetsList" items="${tweets}">
@@ -61,7 +85,9 @@
 		</c:forEach>
 
 		<div class="content-holder">
-			<div class="padding_container" id="NewMessage"><h4>New Message:</h4></div>
+			<div class="padding_container" id="NewMessage">
+				<h4>New Message:</h4>
+			</div>
 			<c:forEach items="${tweet}" var="map">
 				<c:forEach items="${map.value}" var="message">
 					<div class="list_items">
@@ -71,13 +97,17 @@
 				</c:forEach>
 			</c:forEach>
 		</div>
-		<div><h4>Search</h4>
-		
-		<c:forEach items="${listTweets}" var="map">
+
+		<div>
+			<h4>Search</h4>
+
+			<c:forEach items="${listTweets}" var="map">
 				<p>
-				<b>${map.tweet}:</b> ${map.user_username}
-				</c:forEach>
-				</div>
+					<b>${map.tweet}:</b> ${map.user_username}
+			</c:forEach>
+		</div>
+		<div id="messages"></div>
 	</div>
+	
 </body>
 </html>

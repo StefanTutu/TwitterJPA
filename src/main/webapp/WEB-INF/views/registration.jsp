@@ -1,69 +1,78 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
-<c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<meta name="description" content="">
-<meta name="author" content="">
 
 <title>Create an account</title>
 
-<link href="${contextPath}/resources/css/bootstrap.min.css"
-	rel="stylesheet">
-<link href="${contextPath}/resources/css/common.css" rel="stylesheet">
-
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 <script type="javascript"> console.log="registration"</script>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">	
+</script>
+
 </head>
 
-<body>
+<body style="margin: 0px;">
+	<jsp:include page="_menu.jsp" />
 
+	<div style="margin-left: 30px; margin-top: 30px;">
+		<h1>Register on Twitter</h1>
+	</div>
 	<div class="container">
 
-		<form:form method="POST" modelAttribute="userForm" class="form-signin">
-			<h2 class="form-signin-heading">Create your account</h2>
-			<spring:bind path="username">
-				<div class="form-group ${status.error ? 'has-error' : ''}">
-					<form:input type="text" path="username" class="form-control"
-						placeholder="Username" autofocus="true"></form:input>
-					<form:errors path="username"></form:errors>
-				</div>
-			</spring:bind>
-
-			<spring:bind path="password">
-				<div class="form-group ${status.error ? 'has-error' : ''}">
-					<form:input type="password" path="password" class="form-control"
-						placeholder="Password"></form:input>
-					<form:errors path="password"></form:errors>
-				</div>
-			</spring:bind>
-
-			<spring:bind path="passwordConfirm">
-				<div class="form-group ${status.error ? 'has-error' : ''}">
-					<form:input type="password" path="passwordConfirm"
-						class="form-control" placeholder="Confirm your password"></form:input>
-					<form:errors path="passwordConfirm"></form:errors>
-				</div>
-			</spring:bind>
-
-			<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-		</form:form>
-
+		<fieldset>
+			<legend>Register</legend>
+			${error} <br>
+			<table cellpadding="2" cellspacing="2">
+				<tr>
+					<td>Username</td>
+					<td><input id="username" type="text" autofocus="true" /></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input id="password" type="password" /></td>
+				</tr>
+				<tr>
+					<td>Password Confirm</td>
+					<td><input id="passwordConfirm" type="password" placeholder="Confirm you password"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input id="Register" type="submit" value="Submit"></td>
+				</tr>
+			</table>
+		</fieldset>
 	</div>
-	<!-- /container -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
+<script>
+$('#Submit').click(function(){
+	var username = $("#username").val();
+	var password = $("#password").val();
+	var passwordConfirm = $("#passwordConfirm").val();
+	if(password==passwordConfirm){
+	var user ={"username":username, "password":password};
+
+	$.ajax({
+		url:"http://localhost:8080/twitter/account/register",
+		type:"POST",
+		dataType:"JSON",
+		contentType:"application/json",
+		async:true,
+		data:JSON.stringify(user),
+		success:function(data){
+			if(data.code==200){
+				window.location.replace("${contextPath}/account/register");
+			}
+			else {
+				$("#error").text(data.message);
+			}
+		},},
+		failure:function(data){
+		}
+	});
+})
+</script>
 </body>
 </html>

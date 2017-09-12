@@ -4,6 +4,10 @@
 <html>
 <head>
 <title>Twitter :: Login</title>
+ 
+<script
+src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
 </head>
 <body style="margin: 0px;">
 	<jsp:include page="_menu.jsp" />
@@ -18,30 +22,59 @@
 			</div>
 		</c:if>
 	</div>
-	<s:form method="POST" commandName="account" acction="login">
-		<fieldset>
-			<legend>Login</legend>
-			${error} <br>
-			<table cellpadding="2" cellspacing="2">
-				<tr>
-					<td>Username</td>
-					<td><s:input path="username" /></td>
-				</tr>
-				<tr>
-					<td>Password</td>
-					<td><s:input type="password" path="password" /></td>
-				</tr>
-				<tr>
-					<td>Remember me?</td>
-					<td><input type="checkbox" name="remember" value="true"></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><input type="submit" value="Login"></td>
-				</tr>
-			</table>
-		</fieldset>
-	</s:form>
+	<fieldset>
+		<legend>Login</legend>
+		${error} <br>
+		<table cellpadding="2" cellspacing="2">
+			<tr>
+				<td>Username</td>
+				<td><input id="username" type="text" /></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input id="password" type="password" /></td>
+			</tr>
+			<tr>
+				<td>Remember me?</td>
+				<td><input type="checkbox" name="remember" value="true"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><input id="Login" type="submit" value="Login"></td>
+			</tr>
+			<tr>
+			 <h4 class="text-center"><a href="${contextPath}/account/register">Create an account</a></h4>
+			</tr>
+		</table>
+	</fieldset>
+	
+	<script>
+$('#Login').click(function(){
+	var username = $("#username").val();
+	var password = $("#password").val();
+	var user ={"username":username, "password":password};
+
+	$.ajax({
+		url:"http://localhost:8080/twitter/account/login",
+		type:"POST",
+		dataType:"JSON",
+		contentType:"application/json",
+		async:true,
+		data:JSON.stringify(user),
+		success:function(data){
+			if(data.code==200){
+				console.log("asdasdsa")
+				window.location.replace("http://localhost:8080/twitter/index");
+			}
+			else {
+				$("#error").text(data.message);
+			}
+		},
+		failure:function(data){
+		}
+	});
+})
+</script>
 
 </body>
 </html>

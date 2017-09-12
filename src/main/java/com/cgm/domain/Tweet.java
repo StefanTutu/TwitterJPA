@@ -4,13 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "tweet")
+@Table(name = "tweets")
 public class Tweet implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "tweets_id_seq", sequenceName = "tweets_id_seq", allocationSize = 1)
 	@Column(name = "id")
 	private int id;
 
@@ -20,11 +23,20 @@ public class Tweet implements Serializable {
 	@Column(name = "username")
 	private String username;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid", nullable = false)
 	private User user;
 
 	public Tweet() {
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Tweet(int id, String tweet, String username) {
