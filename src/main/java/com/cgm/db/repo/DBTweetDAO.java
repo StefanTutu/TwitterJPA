@@ -20,82 +20,82 @@ import com.cgm.domain.Tweet;
 
 @Repository("dbTweetDAO")
 @EnableTransactionManagement
-public class DBTweetDAO implements TweetDataStore{
-	
-    @SuppressWarnings("unused")
+public class DBTweetDAO implements TweetDataStore {
+
+	@SuppressWarnings("unused")
 	private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
-	
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+	private JdbcTemplate jdbcTemplate;
 
-    @Override
-    public int add(Tweet tweet) {
-        String username = getUsername();
-        String sql = "INSERT INTO tweet (tweet, user_username)" + " VALUES (?, ?)";
-        try {
-            return jdbcTemplate.update(sql, tweet.getTweet(), username);
-        }
-        catch (DataIntegrityViolationException e) {
-            return 0;
-        }
-    }
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
-    @Override
-    public List<Tweet> searchTweets(String search) {
-    	//TODO: read about prepared statement and sql injection
-//    	PreparedStatement stmt; 
-//    	jdbcTemplate.query(psc, rse)
-        String sql = "SELECT * FROM tweet WHERE tweet LIKE '%" + search + "%' ORDER BY tweet_id DESC";
-        List<Tweet> listTweets = jdbcTemplate.query(sql, new RowMapper<Tweet>() {
+	@Override
+	public int add(Tweet tweet) {
+		String username = getUsername();
+		String sql = "INSERT INTO tweet (tweet, user_username)" + " VALUES (?, ?)";
+		try {
+			return jdbcTemplate.update(sql, tweet.getTweet(), username);
+		} catch (DataIntegrityViolationException e) {
+			return 0;
+		}
+	}
 
-            @Override
-            public Tweet mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Tweet tweet = new Tweet();
+	@Override
+	public List<Tweet> searchTweets(String search) {
+		// TODO: read about prepared statement and sql injection
+		// PreparedStatement stmt;
+		// jdbcTemplate.query(psc, rse)
+		String sql = "SELECT * FROM tweet WHERE tweet LIKE '%" + search + "%' ORDER BY tweet_id DESC";
+		List<Tweet> listTweets = jdbcTemplate.query(sql, new RowMapper<Tweet>() {
 
-            tweet.setId(rs.getInt("tweet_id"));
-            tweet.setTweet(rs.getString("tweet"));
-            tweet.setUser_username(rs.getString("user_username"));
+			@Override
+			public Tweet mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Tweet tweet = new Tweet();
 
-            return tweet;
-            }
-        });
+				tweet.setId(rs.getInt("tweet_id"));
+				tweet.setTweet(rs.getString("tweet"));
+				tweet.setUsername(rs.getString("user_username"));
 
-        return listTweets;
-    }
+				return tweet;
+			}
+		});
 
-    @Override
-    public List<Tweet> searchUserTweets(String username, String search) {
-        String sql = "SELECT * FROM tweets WHERE user_username = '"+ username+"' AND tweet LIKE '%" + search + "%' ORDER BY tweet_id DESC";
-        List<Tweet> listTweets = jdbcTemplate.query(sql, new RowMapper<Tweet>() {
+		return listTweets;
+	}
 
-            @Override
-            public Tweet mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Tweet tweet = new Tweet();
+	@Override
+	public List<Tweet> searchUserTweets(String username, String search) {
+		String sql = "SELECT * FROM tweets WHERE user_username = '" + username + "' AND tweet LIKE '%" + search
+				+ "%' ORDER BY tweet_id DESC";
+		List<Tweet> listTweets = jdbcTemplate.query(sql, new RowMapper<Tweet>() {
 
-            tweet.setId(rs.getInt("tweet_id"));
-            tweet.setTweet(rs.getString("tweet"));
-            tweet.setUser_username(rs.getString("user_username"));
+			@Override
+			public Tweet mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Tweet tweet = new Tweet();
 
-            return tweet;
-            }
-        });
+				tweet.setId(rs.getInt("tweet_id"));
+				tweet.setTweet(rs.getString("tweet"));
+				tweet.setUsername(rs.getString("user_username"));
 
-        return listTweets;
-    }
+				return tweet;
+			}
+		});
 
-    public String getUsername() {
-        String username;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return listTweets;
+	}
 
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails)principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-        return username;
-    }
+	public String getUsername() {
+		String username;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails) principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
+		return username;
+	}
 
 }

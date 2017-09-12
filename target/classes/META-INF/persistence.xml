@@ -3,7 +3,6 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
     <persistence-unit name="Twitter-JPA">
-    	<class>com.cgm.domain.Role</class>
     	<class>com.cgm.domain.Tweet</class>
     	<class>com.cgm.domain.User</class>
     	<exclude-unlisted-classes>true</exclude-unlisted-classes>

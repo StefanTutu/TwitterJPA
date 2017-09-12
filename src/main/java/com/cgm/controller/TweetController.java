@@ -21,7 +21,6 @@ public class TweetController {
 	@Autowired
 	private TweetDataStore tweetDataStore; // JDBC
 
-	// NEW TWEET PAGE
 	@RequestMapping(value = "/tweet/new", method = RequestMethod.GET)
 	public ModelAndView newTweet(ModelAndView model) {
 		Tweet newTweet = new Tweet();
@@ -30,7 +29,6 @@ public class TweetController {
 		return model;
 	}
 
-	// NEW TWEET
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/tweet/create", method = RequestMethod.POST, produces = { "application/json",
 			"application/xml" })
@@ -44,7 +42,6 @@ public class TweetController {
 		}
 	}
 
-	// GET ALL TWEETS
 	@RequestMapping(value = "/tweets/formatted", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView tweets(ModelAndView model,
@@ -56,7 +53,6 @@ public class TweetController {
 		return model;
 	}
 
-	// GET TWEETS OF A USER
 	@RequestMapping(value = "/tweets/{username}/formatted", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView tweetsUser(ModelAndView model, @PathVariable String username,
@@ -69,7 +65,6 @@ public class TweetController {
 		return model;
 	}
 
-	// GET ALL TWEETS AS XML OR JSON
 	@RequestMapping(value = "/tweets", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<Tweet> tweets_JSON(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
@@ -77,7 +72,6 @@ public class TweetController {
 		return listTweets;
 	}
 
-	// GET TWEETS OF A USER AS JSON AND XML
 	@RequestMapping(value = "/tweets/{username}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<Tweet> tweetsUser_JSON(@PathVariable String username,

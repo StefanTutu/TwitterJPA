@@ -3,18 +3,17 @@ package com.cgm.domain;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "userlogin")
+@Table(name = "users")
 public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "user_id")
+	@Column(name = "id")
 	private Long id;
 
 	@Column(name = "username")
@@ -23,32 +22,25 @@ public class User implements Serializable {
 	@Column(name = "password")
 	private String password;
 
-	@Column(name = "passwordConfirm")
-	private String passwordConfirm;
-	
 	@Column(name="status")
 	private boolean status;
 
 	@ManyToMany
-	@JoinTable(name = "userlogin_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles;
-	
-	@ManyToMany
 	@JoinTable(name = "follow", joinColumns = 
-			@JoinColumn(name = "user_followed", referencedColumnName = "user_id", nullable = false) , inverseJoinColumns = 
-					@JoinColumn(name = "follower", referencedColumnName = "user_id", nullable = false) )
-	private Collection<User> followToCollection;
+			@JoinColumn(name = "user_followed", referencedColumnName = "id", nullable = false) , inverseJoinColumns = 
+					@JoinColumn(name = "follower", referencedColumnName = "id", nullable = false) )
+	private Collection<User> follows;
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade =CascadeType.ALL)
-	@JoinColumn(name="userLogin")
+	@JoinColumn(name="userid")
 	public List<Tweet> Tweet;
 
-	public Collection<User> getFollowToCollection() {
-		return followToCollection;
+	public Collection<User> getFollows() {
+		return follows;
 	}
 
-	public void setFollowToCollection(Collection<User> followToCollection) {
-		this.followToCollection = followToCollection;
+	public void setFollows(Collection<User> follows) {
+		this.follows = follows;
 	}
 
 	public List<Tweet> getTweet() {
@@ -83,23 +75,6 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	@Transient
-	public String getPasswordConfirm() {
-		return passwordConfirm;
-	}
-
-	public void setPasswordConfirm(String passwordConfirm) {
-		this.passwordConfirm = passwordConfirm;
-	}
-
-	public Set<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
-	
 	public boolean isStatus() {
 		return status;
 	}

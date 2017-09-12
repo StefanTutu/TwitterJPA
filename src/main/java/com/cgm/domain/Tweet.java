@@ -17,25 +17,25 @@ public class Tweet implements Serializable {
 	@Column(name = "tweet")
 	private String tweet;
 
-	@Column(name = "user_username")
-	private String userUsername;
+	@Column(name = "username")
+	private String username;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "loginuserid", nullable = false)
-	private User userLogin;
+	@JoinColumn(name = "userid", nullable = false)
+	private User user;
 
 	public Tweet() {
 	}
 
-	public Tweet(int id, String tweet, String user_username) {
+	public Tweet(int id, String tweet, String username) {
 		this.id = id;
 		this.tweet = tweet;
-		this.userUsername = user_username;
+		this.username = username;
 	}
 
-	public Tweet(String tweet, String user_username) {
+	public Tweet(String tweet, String username) {
 		this.tweet = tweet;
-		this.userUsername = user_username;
+		this.username = username;
 	}
 
 	public int getId() {
@@ -54,11 +54,11 @@ public class Tweet implements Serializable {
 		this.tweet = tweet;
 	}
 
-	public String getUser_username() {
-		return userUsername;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUser_username(String user_username) {
-		this.userUsername = user_username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

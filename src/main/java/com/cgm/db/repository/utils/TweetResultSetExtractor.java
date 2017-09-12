@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.cgm.domain.Tweet;
 
-
 public class TweetResultSetExtractor implements ResultSetExtractor<Tweet> {
 
 	@Override

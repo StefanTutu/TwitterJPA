@@ -10,9 +10,9 @@ import com.cgm.domain.Tweet;
 @SuppressWarnings("rawtypes")
 public class TweetRowMapper implements RowMapper {
 
-	 @Override
-	    public Tweet mapRow(ResultSet rs, int line) throws SQLException {
-	        TweetResultSetExtractor extractor = new TweetResultSetExtractor();
-	        return extractor.extractData(rs);
-	    }
+	@Override
+	public Tweet mapRow(ResultSet rs, int line) throws SQLException {
+		TweetResultSetExtractor extractor = new TweetResultSetExtractor();
+		return extractor.extractData(rs);
+	}
 }

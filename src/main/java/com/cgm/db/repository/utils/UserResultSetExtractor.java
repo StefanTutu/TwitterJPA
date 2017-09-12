@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.cgm.domain.User;
 
-public class UserResultSetExtractor implements ResultSetExtractor<User>{
+public class UserResultSetExtractor implements ResultSetExtractor<User> {
 
 	@Override
 	public User extractData(ResultSet rs) throws SQLException, DataAccessException {

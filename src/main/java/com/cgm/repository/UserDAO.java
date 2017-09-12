@@ -5,9 +5,9 @@ import org.springframework.stereotype.Repository;
 import com.cgm.domain.User;
 
 @Repository
-public class UserLoginDAO extends AbstractDAO<User> {
+public class UserDAO extends AbstractDAO<User> {
 
-	protected UserLoginDAO() {
+	protected UserDAO() {
 		super(User.class);
 	}
 

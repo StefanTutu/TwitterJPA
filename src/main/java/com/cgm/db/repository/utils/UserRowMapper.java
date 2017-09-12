@@ -9,12 +9,10 @@ import com.cgm.domain.User;
 
 @SuppressWarnings("rawtypes")
 public class UserRowMapper implements RowMapper {
-	 @Override
-	    public User mapRow(ResultSet rs, int line) throws SQLException {
-	        UserResultSetExtractor extractor = new UserResultSetExtractor();
-	        return extractor.extractData(rs);
-	    }
-	
+	@Override
+	public User mapRow(ResultSet rs, int line) throws SQLException {
+		UserResultSetExtractor extractor = new UserResultSetExtractor();
+		return extractor.extractData(rs);
+	}
 
 }
-
