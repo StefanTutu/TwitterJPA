@@ -13,43 +13,18 @@ import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.cgm.domain.User;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Repository
 public class UserDAO extends AbstractDAO<User> {
 
-	private DataSource dataSource;
-	private JdbcTemplate jdbcTemplate;
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
 	protected UserDAO() {
 		super(User.class);
-	}
-
-	public String findUsernamById(int userId) {
-
-		String sql = "SELECT username FROM users WHERE ID = ?";
-		String name = jdbcTemplate.queryForObject(sql, String.class, userId);
-		return name;
-
-	}
-
-	public List<User> findAll() {
-
-		String sql = "SELECT * FROM user";
-		List<User> users = jdbcTemplate.query(sql, ParameterizedBeanPropertyRowMapper.newInstance(User.class));
-
-		return users;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -62,6 +37,27 @@ public class UserDAO extends AbstractDAO<User> {
 		Root root = cq.from(User.class);
 		cq.select(root);
 		cq.where(cb.equal(root.get("username"), entityName));
+		TypedQuery<User> q = em().createQuery(cq);
+		User result = q.getSingleResult();
+		return result;
+		}
+		catch(NoResultException ex) {
+			
+		}
+		return null;
+	}
+	
+	@JsonSetter
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Transactional
+	public User findByClass(final User user) {
+
+		try {
+		CriteriaBuilder cb = em().getCriteriaBuilder();
+		CriteriaQuery<User> cq = cb.createQuery(User.class);
+		Root root = cq.from(User.class);
+		cq.select(root);
+		cq.where(cb.equal(root.get("username"), user));
 		TypedQuery<User> q = em().createQuery(cq);
 		User result = q.getSingleResult();
 		return result;

@@ -18,8 +18,8 @@
 			window.location = 'http://localhost:8080/twitter/tweets/formatted?search='
 					+ search;
 		} else {
-			window.location = 'http://localhost:8080/twitter/tweets/'
-					+ username + "/formatted?search=" + search;
+			window.location = 'http://localhost:8080/twitter/tweets/formatted/'
+					+ username;
 		}
 
 		var newMessage = document.getElementById('NewMessage');
@@ -101,12 +101,16 @@
 		<div>
 			<h4>Search</h4>
 
+			<b><div>${userSearch}</div></b>
+			
 			<c:forEach items="${listTweets}" var="map">
 				<p>
 					<b>${map.tweet}:</b> ${map.user_username}
 			</c:forEach>
 		</div>
 		<div id="messages"></div>
+		
+		
 	</div>
 	
 </body>

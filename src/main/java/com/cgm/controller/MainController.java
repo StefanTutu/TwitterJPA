@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController {
@@ -32,23 +33,29 @@ public class MainController {
 	public String TweetPage(Model model) {
 		return "tweets/tweetsPage";
 	}
-	
+
 	@RequestMapping(value = "/tweet/new", method = RequestMethod.GET)
 	public String TweetPageFormatted(Model model) {
 		return "tweets/newTweetPage";
 	}
-	
+
 	@RequestMapping(value = "/following/formatted", method = RequestMethod.GET)
 	public String FollowingPage(Model model) {
 		return "follows/followingPage";
 	}
-	
+
 	@RequestMapping(value = "/followers/formatted", method = RequestMethod.GET)
 	public String FollowersPage(Model model) {
 		return "follows/followersPage";
 	}
+
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public String FollowePage(Model model) {
 		return "follows/followPage";
+	}
+
+	@RequestMapping(value = "account/register", method = RequestMethod.GET)
+	public ModelAndView register() {
+		return new ModelAndView("registration");
 	}
 }

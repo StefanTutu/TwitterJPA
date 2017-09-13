@@ -3,6 +3,32 @@
 <html>
 <head>
 <title>Twitter :: Followers</title>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+	$(document).ready(
+			function() {
+				$.ajax({
+					type : "GET",
+					url : 'http://localhost:8080/twitter/users/follow',
+					dataType : "json"
+				}).then(
+						function(data) {
+							if (data != null) {
+								$("follow").text("");
+								for (var i = 0; i < data.length; i++) {
+									$("#follow").append(
+											"<p>" + data[i].username + ":"
+													+ data[i].tweet + "</p>");
+								}
+							} else {
+								$('#follow').text("You need to login !");
+							}
+						});
+			})
+</script>
+
 </head>
 <body style="margin: 0px;">
 	<jsp:include page="../_menu.jsp" />
@@ -14,6 +40,7 @@
 		<c:forEach var="user" items="${listFollowers}" varStatus="status">
 			<p>${user.user_followed}</p>
 		</c:forEach>
+		<div id="follow"></div>
 	</div>
 </body>
 </html>

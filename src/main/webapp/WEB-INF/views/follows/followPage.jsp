@@ -1,59 +1,134 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <html>
 <head>
-  <title>Twitter :: Follow and/or Unfollow</title>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<title>Twitter :: Follow and/or Unfollow</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+	$(document)
+			.ready(
+					function() {
+
+						$
+								.ajax(
+										{
+											type : "GET",
+											url : 'http://localhost:8080/twitter/users/all',
+											dataType : "json"
+
+										})
+								.then(
+										function(data) {
+											if (data != null) {
+												$("#messages").text("");
+												for (var i = 0; i < data.length; i++) {
+													var div = document
+															.createElement('div');
+													div.innerHTML = '<p><strong>User</strong>  '
+															+ data[i].username
+															+ '</p>';
+													var HTML = '';
+													if (data[i].status == false) {
+														HTML = '<input type="button" value="Follow" style="margin-left: 10px;" onClick="follow(';
+														HTML += data[i].id
+																+ ')">'
+													} else {
+														HTML = '<input type="button" value="Unfollow" style="margin-left: 10px;" onClick="unfollow(';
+														HTML += data[i].id
+																+ ')">'
+													}
+													div.innerHTML += HTML;
+													$('#messages').append(div);
+												}
+											} else {
+												$('#messages').text(
+														"You need to login !")
+											}
+										});
+					});
+</script>
+
 </head>
 <body style="margin: 0px;">
-  <jsp:include page="../_menu.jsp" />
+	<jsp:include page="../_menu.jsp" />
 
-  <div style="margin-left:30px; margin-top: 30px;">
+	<div style="margin-left: 30px; margin-top: 30px;">
 
-    <h1 style="color: grey;">Follow and/or Unfollow Users</h1>
+		<h1 style="color: grey;">Follow and/or Unfollow Users</h1>
 
-    <c:if test="${not empty notice}">
+		<c:if test="${not empty notice}">
       ${notice}
     </c:if>
 
-    <br/>
+		<br />
 
-	
-    <c:forEach var="user" items="${listUsers}">
-    	<c:forEach var="userStatus" items="${user.value}">
-      <p>
-        <c:choose>
-          <c:when test="${userStatus.status == false}">
-            <b>User: </b>${userStatus.username}
-            <input type="button" value="Follow" style="margin-left: 10px;" onClick="follow('${userStatus.username}')">
-          </c:when>
 
-          <c:otherwise>
-            <b>User: </b>${userStatus.username}
-            <input type="button" value="Unfollow" style="margin-left: 10px;" onClick="unfollow('${userStatus.username}')">
-          </c:otherwise>
-        </c:choose>
-        <br/>
-      </p>
-      </c:forEach>
-    </c:forEach>
-  </div>
 
-  <script>
-    function follow(username){
-      $.post("${pageContext.request.contextPath}/users/follow",{username:username,commandName:"followForm"}).always(function(data){
-        alert(data.message);
-        location.reload();
-      });
-    }
+		<div id="messages"></div>
+	</div>
 
-    function unfollow(username){
-      $.post("${pageContext.request.contextPath}/users/unfollow",{username:username,commandName:"unfollowForm"}).always(function(data){
-        alert(data.message);
-        location.reload();
-      });
-    }
-  </script>
+	<script>
+		function follow() {
+			$.ajax({
+				url:"http://localhost:8080/twitter/users/follow/remove",
+				type:"POST",
+				dataType:"JSON",
+				contentType:"application/json",
+				async:true,
+				success:function(data){
+					if(data.code==200){
+						console.log("asdasdsa")
+						window.location.replace("http://localhost:8080/twitter/index");
+					}
+					else {
+						$("#error").text(data.message);
+					}
+				},
+				failure:function(data){
+				}
+			});
+			
+			event.target.value = 'Unfollow';
+			//event.target.onclick= 'unfollow(' + userId + ')';
+			$.post("${pageContext.request.contextPath}/users/follow/remove")
+					.always(function(data) {
+						alert(data.message);
+						location.reload();
+					});
+		};
+
+		function unfollow() {
+			
+			$.ajax({
+				url:"http://localhost:8080/twitter/users/follow/add",
+				type:"POST",
+				dataType:"JSON",
+				contentType:"application/json",
+				async:true,
+				success:function(data){
+					if(data.code==200){
+						console.log("asdasdsa")
+						window.location.replace("http://localhost:8080/twitter/index");
+					}
+					else {
+						$("#error").text(data.message);
+					}
+				},
+				failure:function(data){
+				}
+			});
+			
+			event.target.value = 'Follow';
+			//event.target.onclick= 'follow(' + userId + ')';
+			$.post("${pageContext.request.contextPath}/users/follow/add")
+					.always(function(data) {
+						alert(data.message);
+						location.reload();
+					});
+		};
+	</script>
 </body>
 </html>

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cgm.domain.Tweet;
 import com.cgm.domain.User;
 import com.cgm.dto.ServiceResponse;
+import com.cgm.repository.TweetDAO;
 import com.cgm.repository.UserDAO;
 
 import java.util.List;
@@ -21,22 +22,25 @@ public class TweetController {
 
 	@Autowired
 	UserDAO userDAO;
-	
-	@RequestMapping(value="/tweet/{id}", method = RequestMethod.GET)
+
+	@Autowired
+	TweetDAO tweetDAO;
+
+	@RequestMapping(value = "/tweet/{id}", method = RequestMethod.GET)
 	public @ResponseBody User newUser(@PathVariable("id") Long id) {
 		return userDAO.findById(id);
 	}
-	
-	@RequestMapping(value="/tweet/users", method = RequestMethod.GET)
-	public @ResponseBody List<Tweet> tweetUser( User user, HttpServletRequest request) {
-		String username=request.getSession().getAttribute("username").toString();
+
+	@RequestMapping(value = "/tweet/users", method = RequestMethod.GET)
+	public @ResponseBody List<Tweet> tweetUser(User user, HttpServletRequest request) {
+		String username = request.getSession().getAttribute("username").toString();
 		return userDAO.findByName(username).getTweet();
-		
+
 	}
-	
-	@RequestMapping(value="/mesaj/message", method=RequestMethod.PUT)
-	public @ResponseBody  Object ServiceResponse(@RequestBody Tweet tweet, HttpServletRequest request){
-		String username=request.getSession().getAttribute("username").toString();
+
+	@RequestMapping(value = "/mesaj/message", method = RequestMethod.PUT)
+	public @ResponseBody Object ServiceResponse(@RequestBody Tweet tweet, HttpServletRequest request) {
+		String username = request.getSession().getAttribute("username").toString();
 		User user = userDAO.findByName(username);
 		tweet.setUsername(username);
 		tweet.setUser(user);
@@ -44,64 +48,49 @@ public class TweetController {
 		userDAO.update(user);
 		return tweet;
 	}
-	
 
-/*	@RequestMapping(value = "/tweet/new", method = RequestMethod.GET)
-	public ModelAndView newTweet(ModelAndView model) {
-		Tweet newTweet = new Tweet();
-		model.addObject("tweet", newTweet);
-		model.setViewName("tweets/newTweetPage");
-		return model;
-	}
-
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/tweet/create", method = RequestMethod.POST, produces = { "application/json",
-			"application/xml" })
-	@ResponseBody
-	public ResponseEntity createTweet(@ModelAttribute("tweetForm") Tweet tweet) {
-		int result = tweetDAO.add(tweet);
-		if (result == 1) {
-			return ResponseEntity.ok("{\"message\": \"Success!\"}");
+	@RequestMapping(value = "tweets/formatted/{username}", method = RequestMethod.GET)
+	public ModelAndView getUsers(@PathVariable("username") String userName, Model model) {
+		if (userName != null && userDAO.findByName(userName) != null) {
+			User user = userDAO.findByName(userName);
+			return new ModelAndView("tweets/tweetsPage", "userSearch", user.getUsername());
 		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error!\"}");
+			return new ModelAndView("tweets/tweetsPage", "userSearch", "not found");
 		}
 	}
 
-	@RequestMapping(value = "/tweets/formatted", method = RequestMethod.GET)
-	@ResponseBody
-	public ModelAndView tweets(ModelAndView model,
-			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		List<Tweet> listTweets = tweetDAO.searchTweets(search);
-		model.addObject("listTweets", listTweets);
-		model.addObject("search", search);
-		model.setViewName("tweets/tweetsPage");
-		return model;
+	@RequestMapping(value = "tweets/formatted/new/{tweet}/", method = RequestMethod.GET)
+	public ModelAndView getUsersTweet(@PathVariable("tweet") Tweet tweet, String search, Model model) {
+		if (search != null) {
+			tweet.getTweet().equalsIgnoreCase(search);
+			return new ModelAndView("tweets/tweetsPage", "Search", tweet.getTweet());
+		} else {
+			return new ModelAndView("tweets/tweetsPage", "Search", "not found");
+		}
+	}
+	
+	@RequestMapping(value="/users/follow/add", method = RequestMethod.POST)
+	public @ResponseBody  User getUser(@RequestBody HttpServletRequest request, Long id) throws Exception{
+		System.out.println("------------------------------------------");
+		User loggedUser = userDAO.findByName(((User) request.getSession().getAttribute("LOGGEDIN_USER")).getUsername());
+		User followedUser = userDAO.findById(id);
+		List<User> friendsList = (List<User>) loggedUser.getFollows();
+		friendsList.add(followedUser);
+		loggedUser.setFollows(friendsList);
+		userDAO.update(loggedUser);
+		loggedUser.setStatus(true);
+		return loggedUser;
 	}
 
-	@RequestMapping(value = "/tweets/{username}/formatted", method = RequestMethod.GET)
-	@ResponseBody
-	public ModelAndView tweetsUser(ModelAndView model, @PathVariable String username,
-			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		List<Tweet> listTweets = tweetDAO.searchUserTweets(username, search);
-		model.addObject("listTweets", listTweets);
-		model.addObject("username", username);
-		model.addObject("search", search);
-		model.setViewName("tweets/tweetsPage");
-		return model;
+	@RequestMapping(value = "/users/follow/remove", method = RequestMethod.POST)
+	public @ResponseBody  User removeUser(@RequestBody HttpServletRequest request, Long id) throws Exception{
+		User loggedUser = userDAO.findByName(((User) request.getSession().getAttribute("LOGGEDIN_USER")).getUsername());
+		User followedUser = userDAO.findById(id);
+		List<User> friendsList = (List<User>) loggedUser.getFollows();
+		friendsList.add(followedUser);
+		loggedUser.setFollows(friendsList);
+		userDAO.remove(loggedUser);
+		loggedUser.setStatus(false);
+		return loggedUser;
 	}
-
-	@RequestMapping(value = "/tweets", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<Tweet> tweets_JSON(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		List<Tweet> listTweets = tweetDAO.searchTweets(search);
-		return listTweets;
-	}
-
-	@RequestMapping(value = "/tweets/{username}", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<Tweet> tweetsUser_JSON(@PathVariable String username,
-			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		List<Tweet> listTweets = tweetDAO.searchUserTweets(username, search);
-		return listTweets;
-	}*/
 }

@@ -43,7 +43,7 @@ src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
 				<td><input id="Login" type="submit" value="Login"></td>
 			</tr>
 			<tr>
-			 <h4 class="text-center"><a href="${contextPath}/account/register">Create an account</a></h4>
+			 <h4 class="text-center"><a href="http://localhost:8080/twitter/account/register">Create an account</a></h4>
 			</tr>
 		</table>
 	</fieldset>
@@ -63,7 +63,6 @@ $('#Login').click(function(){
 		data:JSON.stringify(user),
 		success:function(data){
 			if(data.code==200){
-				console.log("asdasdsa")
 				window.location.replace("http://localhost:8080/twitter/index");
 			}
 			else {

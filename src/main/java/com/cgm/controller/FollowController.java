@@ -8,95 +8,43 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cgm.domain.Tweet;
+import com.cgm.domain.User;
 import com.cgm.repository.UserDAO;
 
+import java.util.Collection;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class FollowController {
 
 	@Autowired
-    private UserDAO userDAO;//JPA
-	
-	
+	private UserDAO userDAO;
+
+	@RequestMapping(value = "/users/follow", method = RequestMethod.GET)
+	public @ResponseBody Collection<User> followUser(User user, HttpServletRequest request) {
+		String username = request.getSession().getAttribute("username").toString();
+		return userDAO.findByName(username).getFollows();
+	}
+
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+	public @ResponseBody User newUser(@PathVariable("id") Long id) {
+		return userDAO.findById(id);
+	}
+
+	@RequestMapping(value = "/users/following", method = RequestMethod.GET)
+	public @ResponseBody Collection<User> followingUser(User user, HttpServletRequest request) {
+		String username = request.getSession().getAttribute("username").toString();
+		return userDAO.findByName(username).getFollows();
+	}
+
+	@RequestMapping(value = "/users/all", method = RequestMethod.GET)
+	public @ResponseBody Collection<User> allUser(User user, HttpServletRequest request) {
+		return userDAO.findAll();
+	}
+
+
+
 }
-	/*@SuppressWarnings("unused")
-	@Autowired
-	private UserDataStore userDataStore; // JDBC
-
-    @SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/users/follow", method = RequestMethod.POST, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity followUser(@ModelAttribute("followForm") UserStatus user) {
-        int result = userDAO.follow(user.getUsername());
-        if (result == 1) {
-            return ResponseEntity.ok("{\"message\": \"Success!\"}");
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error!\"}");
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/users/unfollow", method = RequestMethod.POST, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity unfollowUser(@ModelAttribute("unfollowForm") UserStatus user) {
-        int result = userDAO.unfollow(user.getUsername());
-        if (result == 1) {
-            return ResponseEntity.ok("{\"message\": \"Success!\"}");
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error!\"}");
-        }
-    }
-
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView followPage(ModelAndView model) {
-        UserStatus followForm = new UserStatus();
-        UserStatus unfollowForm = new UserStatus();
-        model.addObject("followForm", followForm);
-        model.addObject("unfollowForm", unfollowForm);
-
-        List<UserStatus> listUsers =userDAO.listUsers();
-        model.addObject("listUsers", listUsers);
-
-        model.setViewName("follows/followPage");
-        return model;
-    }
-
-    @RequestMapping(value = "/following/formatted", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView following(ModelAndView model) {
-        List<UserLogin> listFollowing = userDAO.listFollowing();
-        model.addObject("listFollowing", listFollowing);
-        model.setViewName("follows/followingPage");
-        return model;
-    }
-
-    @RequestMapping(value = "/followers/formatted", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView followers(ModelAndView model) {
-        List<UserLogin> listFollowers = userDAO.listFollowers();
-        model.addObject("listFollowers", listFollowers);
-        model.setViewName("follows/followersPage");
-        return model;
-    }
-
-    @RequestMapping(value = "/following", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public List<UserLogin> following_JSON() {
-        List<UserLogin> listFollowing = userDAO.listFollowing();
-        return listFollowing;
-    }
-
-    @RequestMapping(value = "/followers", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public List<UserLogin> followers_JSON() {
-        List<UserLogin> listFollowers = userDAO.listFollowers();
-        return listFollowers;
-    }
-	
-}
-
-*/

@@ -51,26 +51,30 @@ $('#Submit').click(function(){
 	var username = $("#username").val();
 	var password = $("#password").val();
 	var passwordConfirm = $("#passwordConfirm").val();
-	if(password==passwordConfirm){
+	
 	var user ={"username":username, "password":password};
 
 	$.ajax({
 		url:"http://localhost:8080/twitter/account/register",
 		type:"POST",
 		dataType:"JSON",
-		contentType:"application/json",
+		contentType:"application/json; charset=utf-8",
 		async:true,
+		processData : true,
 		data:JSON.stringify(user),
 		success:function(data){
+			console.log(asdad)
+			
 			if(data.code==200){
-				window.location.replace("${contextPath}/account/register");
+				window.location.replace("${contextPath}/account/login");
 			}
 			else {
 				$("#error").text(data.message);
 			}
 		},},
-		failure:function(data){
-		}
+		failure=function(data){
+			allert(data);
+		
 	});
 })
 </script>
