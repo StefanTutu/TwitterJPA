@@ -32,44 +32,22 @@ public class UserDAO extends AbstractDAO<User> {
 	public User findByName(final String entityName) {
 
 		try {
-		CriteriaBuilder cb = em().getCriteriaBuilder();
-		CriteriaQuery<User> cq = cb.createQuery(User.class);
-		Root root = cq.from(User.class);
-		cq.select(root);
-		cq.where(cb.equal(root.get("username"), entityName));
-		TypedQuery<User> q = em().createQuery(cq);
-		User result = q.getSingleResult();
-		return result;
-		}
-		catch(NoResultException ex) {
-			
-		}
-		return null;
-	}
-	
-	@JsonSetter
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Transactional
-	public User findByClass(final User user) {
+			CriteriaBuilder cb = em().getCriteriaBuilder();
+			CriteriaQuery<User> cq = cb.createQuery(User.class);
+			Root root = cq.from(User.class);
+			cq.select(root);
+			cq.where(cb.equal(root.get("username"), entityName));
+			TypedQuery<User> q = em().createQuery(cq);
+			User result = q.getSingleResult();
+			return result;
+		} catch (NoResultException ex) {
 
-		try {
-		CriteriaBuilder cb = em().getCriteriaBuilder();
-		CriteriaQuery<User> cq = cb.createQuery(User.class);
-		Root root = cq.from(User.class);
-		cq.select(root);
-		cq.where(cb.equal(root.get("username"), user));
-		TypedQuery<User> q = em().createQuery(cq);
-		User result = q.getSingleResult();
-		return result;
-		}
-		catch(NoResultException ex) {
-			
 		}
 		return null;
 	}
-	
+
 	@Transactional
-	public void insertUser( User user) {
+	public void insertUser(User user) {
 		super.update(user);
 	}
 

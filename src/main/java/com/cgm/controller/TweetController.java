@@ -70,27 +70,28 @@ public class TweetController {
 	}
 	
 	@RequestMapping(value="/users/follow/add", method = RequestMethod.POST)
-	public @ResponseBody  User getUser(@RequestBody HttpServletRequest request, Long id) throws Exception{
-		System.out.println("------------------------------------------");
-		User loggedUser = userDAO.findByName(((User) request.getSession().getAttribute("LOGGEDIN_USER")).getUsername());
+	public @ResponseBody  User getUser (HttpServletRequest request,@RequestBody Long id) throws Exception{
+		User loggedUser = userDAO.findByName(((String) request.getSession().getAttribute("username")));
 		User followedUser = userDAO.findById(id);
 		List<User> friendsList = (List<User>) loggedUser.getFollows();
 		friendsList.add(followedUser);
 		loggedUser.setFollows(friendsList);
-		userDAO.update(loggedUser);
 		loggedUser.setStatus(true);
+		userDAO.update(loggedUser);
 		return loggedUser;
 	}
 
 	@RequestMapping(value = "/users/follow/remove", method = RequestMethod.POST)
-	public @ResponseBody  User removeUser(@RequestBody HttpServletRequest request, Long id) throws Exception{
-		User loggedUser = userDAO.findByName(((User) request.getSession().getAttribute("LOGGEDIN_USER")).getUsername());
+	public @ResponseBody  User removeUser( HttpServletRequest request,@RequestBody Long id) throws Exception{
+		User loggedUser = userDAO.findByName(((String) request.getSession().getAttribute("username")));
 		User followedUser = userDAO.findById(id);
 		List<User> friendsList = (List<User>) loggedUser.getFollows();
-		friendsList.add(followedUser);
+		
+		friendsList.remove(followedUser);
+		
 		loggedUser.setFollows(friendsList);
-		userDAO.remove(loggedUser);
 		loggedUser.setStatus(false);
+		userDAO.update(loggedUser);
 		return loggedUser;
 	}
 }

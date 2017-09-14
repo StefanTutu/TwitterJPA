@@ -41,6 +41,7 @@ public class LoginController {
 		if (UserLogin != null) {
 			if (UserLogin.getPassword().equals(user.getPassword())) {
 				request.getSession().setAttribute("username", UserLogin.getUsername());
+				
 				return serviceResponse;
 			}
 		}

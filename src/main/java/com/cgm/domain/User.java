@@ -25,18 +25,18 @@ public class User implements Serializable {
 	@Column(name = "password")
 	private String password;
 
-	@Column(name="status")
+	@Column(name = "status")
 	private boolean status;
 
 	@JsonIgnore
-	@ManyToMany(fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-	@JoinTable(name = "follow", joinColumns = 
-			@JoinColumn(name = "user_followed", referencedColumnName = "id", nullable = false) , inverseJoinColumns = 
-					@JoinColumn(name = "follower", referencedColumnName = "id", nullable = false) )
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "user_followed", referencedColumnName = "id", nullable = false), 
+		inverseJoinColumns = @JoinColumn(name = "follower", referencedColumnName = "id", nullable = false), uniqueConstraints = {
+			@UniqueConstraint(columnNames = { "user_followed", "follower" }) })
 	private Collection<User> follows;
-	
-	@OneToMany(fetch=FetchType.EAGER, cascade =CascadeType.ALL)
-	@JoinColumn(name="userid")
+
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "userid")
 	public List<Tweet> Tweet;
 
 	public Collection<User> getFollows() {

@@ -25,6 +25,7 @@
 											if (data != null) {
 												$("#messages").text("");
 												for (var i = 0; i < data.length; i++) {
+													console.log(data[i].username + data[i].id + data[i].status);
 													var div = document
 															.createElement('div');
 													div.innerHTML = '<p><strong>User</strong>  '
@@ -56,7 +57,6 @@
 	<jsp:include page="../_menu.jsp" />
 
 	<div style="margin-left: 30px; margin-top: 30px;">
-
 		<h1 style="color: grey;">Follow and/or Unfollow Users</h1>
 
 		<c:if test="${not empty notice}">
@@ -71,36 +71,7 @@
 	</div>
 
 	<script>
-		function follow() {
-			$.ajax({
-				url:"http://localhost:8080/twitter/users/follow/remove",
-				type:"POST",
-				dataType:"JSON",
-				contentType:"application/json",
-				async:true,
-				success:function(data){
-					if(data.code==200){
-						console.log("asdasdsa")
-						window.location.replace("http://localhost:8080/twitter/index");
-					}
-					else {
-						$("#error").text(data.message);
-					}
-				},
-				failure:function(data){
-				}
-			});
-			
-			event.target.value = 'Unfollow';
-			//event.target.onclick= 'unfollow(' + userId + ')';
-			$.post("${pageContext.request.contextPath}/users/follow/remove")
-					.always(function(data) {
-						alert(data.message);
-						location.reload();
-					});
-		};
-
-		function unfollow() {
+		function follow(id) {
 			
 			$.ajax({
 				url:"http://localhost:8080/twitter/users/follow/add",
@@ -108,26 +79,48 @@
 				dataType:"JSON",
 				contentType:"application/json",
 				async:true,
+				data:JSON.stringify(id),
 				success:function(data){
 					if(data.code==200){
-						console.log("asdasdsa")
 						window.location.replace("http://localhost:8080/twitter/index");
+						location.reload();
 					}
 					else {
 						$("#error").text(data.message);
+						location.reload();
 					}
 				},
 				failure:function(data){
+					location.reload();
 				}
 			});
 			
-			event.target.value = 'Follow';
-			//event.target.onclick= 'follow(' + userId + ')';
-			$.post("${pageContext.request.contextPath}/users/follow/add")
-					.always(function(data) {
-						alert(data.message);
+		};
+
+		function unfollow(id) {
+			
+			$.ajax({
+				url:"http://localhost:8080/twitter/users/follow/remove",
+				type:"POST",
+				dataType:"JSON",
+				contentType:"application/json",
+				async:true,
+				data:JSON.stringify(id),
+				success:function(data){
+					if(data.code==200){
+						window.location.replace("http://localhost:8080/twitter/index");
 						location.reload();
-					});
+					}
+					else {
+						$("#error").text(data.message);
+						location.reload();
+					}
+				},
+				failure:function(data){
+					location.reload();
+				}
+			});
+			
 		};
 	</script>
 </body>
