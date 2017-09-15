@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @SuppressWarnings("serial")
@@ -30,14 +33,26 @@ public class User implements Serializable {
 
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "user_followed", referencedColumnName = "id", nullable = false), 
-		inverseJoinColumns = @JoinColumn(name = "follower", referencedColumnName = "id", nullable = false), uniqueConstraints = {
+	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "user_followed", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "follower", referencedColumnName = "id", nullable = false), uniqueConstraints = {
 			@UniqueConstraint(columnNames = { "user_followed", "follower" }) })
 	private Collection<User> follows;
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "userid")
 	public List<Tweet> Tweet;
+
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "username_role")
+	private List<UserRoles> userRole;
+
+	public List<UserRoles> getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(List<UserRoles> userRole) {
+		this.userRole = userRole;
+	}
 
 	public Collection<User> getFollows() {
 		return follows;

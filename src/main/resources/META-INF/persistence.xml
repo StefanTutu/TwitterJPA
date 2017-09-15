@@ -5,6 +5,7 @@
     <persistence-unit name="Twitter-JPA">
     	<class>com.cgm.domain.Tweet</class>
     	<class>com.cgm.domain.User</class>
+    	<class>com.cgm.domain.UserRoles</class>
     	<exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>
